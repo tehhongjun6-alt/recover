@@ -9,11 +9,6 @@ function formatTime(iso) {
   return day + " " + time;
 }
 
-function formatTime2(iso) {
-  const d = new Date(iso);
-  return d.getHours() + ":" + d.getMinutes();
-}
-
 function App() {
   const [members, setMembers] = useState([]);
   const [email, setEmail] = useState("");
