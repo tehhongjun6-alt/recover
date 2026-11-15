@@ -4,7 +4,7 @@ export function ClassCard({ cls, email, bookClass }) {
   const spotsLeft = cls.capacity - cls.booked;
   let label = spotsLeft + " spots left";
   if (spotsLeft === 0) {
-    label = "Full";
+    label = "FULL";
   } else if (spotsLeft <= 3) {
     label = "Almost full! " + spotsLeft + " left";
   }
