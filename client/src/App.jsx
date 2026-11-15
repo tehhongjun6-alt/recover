@@ -17,7 +17,6 @@ function App() {
   const [members, setMembers] = useState([]);
   const [email, setEmail] = useState("");
   const [classes, setClasses] = useState([]);
-  const [spotsLeft, setSpotsLeft] = useState({});
   const [bookings, setBookings] = useState([]);
   const [day, setDay] = useState("All");
   const [toast, setToast] = useState(null);
@@ -45,14 +44,6 @@ function App() {
     }
     loadClasses();
   }, []);
-
-  useEffect(() => {
-    const left = {};
-    for (let i = 0; i < classes.length; i++) {
-      left[classes[i].id] = classes[i].capacity - classes[i].booked;
-    }
-    setSpotsLeft(left);
-  }, [classes]);
 
   async function selectMember(value) {
     setEmail(value);
@@ -133,7 +124,6 @@ function App() {
 
       <Schedule
         classes={shown}
-        spotsLeft={spotsLeft}
         day={day}
         setDay={setDay}
         email={email}
@@ -160,7 +150,7 @@ function App() {
   );
 }
 
-function Schedule({ classes, spotsLeft, day, setDay, email, bookClass }) {
+function Schedule({ classes, day, setDay, email, bookClass }) {
   const days = ["All", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   return (
     <section>
@@ -173,18 +163,19 @@ function Schedule({ classes, spotsLeft, day, setDay, email, bookClass }) {
         ))}
       </div>
       {classes.map((c) => (
-        <ClassCard key={c.id} cls={c} spotsLeft={spotsLeft} email={email} bookClass={bookClass} />
+        <ClassCard key={c.id} cls={c} email={email} bookClass={bookClass} />
       ))}
     </section>
   );
 }
 
-function ClassCard({ cls, spotsLeft, email, bookClass }) {
-  let label = spotsLeft[cls.id] + " spots left";
-  if (spotsLeft[cls.id] === 0) {
+function ClassCard({ cls, email, bookClass }) {
+  const spotsLeft = cls.capacity - cls.booked;
+  let label = spotsLeft + " spots left";
+  if (spotsLeft === 0) {
     label = "Full";
-  } else if (spotsLeft[cls.id] <= 3) {
-    label = "Almost full! " + spotsLeft[cls.id] + " left";
+  } else if (spotsLeft <= 3) {
+    label = "Almost full! " + spotsLeft + " left";
   }
   return (
     <article>
