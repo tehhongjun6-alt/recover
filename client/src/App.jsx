@@ -47,11 +47,18 @@ function App() {
     loadClasses();
   }, []);
 
+  async function refreshData(email) {
+    const res = await fetch(API_URL + "/api/classes");
+    const data = await res.json();
+    setClasses(data);
+    const res2 = await fetch(API_URL + "/api/bookings/" + email);
+    const data2 = await res2.json();
+    setBookings(data2);
+  }
+
   async function selectMember(value) {
     setEmail(value);
-    const res = await fetch(API_URL + "/api/bookings/" + value);
-    const data = await res.json();
-    setBookings(data);
+    await refreshData(value);
   }
 
   async function bookClass(classId) {
@@ -67,12 +74,7 @@ function App() {
         return;
       }
       setToast({ text: "Booked!", type: "success" });
-      const res = await fetch(API_URL + "/api/classes");
-      const data = await res.json();
-      setClasses(data);
-      const res2 = await fetch(API_URL + "/api/bookings/" + email);
-      const data2 = await res2.json();
-      setBookings(data2);
+      await refreshData(email);
     } catch (err) {
       console.error(err);
       setToast({ text: "Something went wrong. Try again.", type: "error" });
@@ -90,12 +92,7 @@ function App() {
         return;
       }
       setToast({ text: "Cancelled", type: "success" });
-      const res = await fetch(API_URL + "/api/classes");
-      const data = await res.json();
-      setClasses(data);
-      const res2 = await fetch(API_URL + "/api/bookings/" + email);
-      const data2 = await res2.json();
-      setBookings(data2);
+      await refreshData(email);
     } catch (err) {
       console.error(err);
       setToast({ text: "Something went wrong. Try again.", type: "error" });
