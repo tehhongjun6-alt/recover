@@ -287,7 +287,7 @@ label {
   margin-left: calc(50% + 24px);
   margin-right: auto;
   margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: calc(50vh - 61px);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -337,30 +337,6 @@ label select:focus {
   box-shadow: 0 0 0 3px rgba(41, 82, 255, 0.5);
 }
 
-/* Feedback message on the Right (completes Slide 1 at exactly 100vh) */
-.message {
-  width: calc(50% - 40px);
-  max-width: 480px;
-  min-height: 24px;
-  line-height: 24px;
-  margin-left: calc(50% + 24px);
-  margin-right: auto;
-  margin-top: 0;
-  margin-bottom: calc(50vh - 101px);
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--accent-neon);
-  letter-spacing: -0.01em;
-  text-align: left;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
-  position: relative;
-  z-index: 1;
-}
-
-.message:empty {
-  visibility: hidden;
-}
-
 /* ========================================================
    SLIDE 2: THE SCHEDULE (100vh Slideshow Slide)
    Poster Texture (Sample 2: NEVER GIVE UP), Klein Blue Accent, Chalk Paper
@@ -375,8 +351,9 @@ section {
   padding: 40px 24px;
   display: grid;
   grid-template-columns: repeat(2, minmax(280px, 460px));
+  grid-auto-rows: min-content;
   justify-content: center;
-  align-content: center;
+  align-content: start;
   gap: 14px;
   position: relative;
   z-index: 1;
@@ -729,13 +706,8 @@ li button:hover {
     margin-right: auto;
     padding: 12px 20px;
   }
-  .message {
-    width: calc(100% - 32px);
-    max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    margin-bottom: calc(50vh - 220px);
+  label {
+    margin-bottom: calc(50vh - 180px);
   }
 }
 
@@ -750,8 +722,8 @@ li button:hover {
     margin-bottom: 12px;
     border-radius: 20px;
   }
-  .message {
-    margin-bottom: calc(50vh - 180px);
+  label {
+    margin-bottom: calc(50vh - 140px);
   }
 }
 

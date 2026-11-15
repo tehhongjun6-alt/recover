@@ -20,7 +20,6 @@ function App() {
   const [spotsLeft, setSpotsLeft] = useState({});
   const [bookings, setBookings] = useState([]);
   const [day, setDay] = useState("All");
-  const [message, setMessage] = useState("");
   const [toast, setToast] = useState(null);
 
   useEffect(() => {
@@ -57,7 +56,6 @@ function App() {
 
   async function selectMember(value) {
     setEmail(value);
-    setMessage("");
     const res = await fetch("http://localhost:3001/api/bookings/" + value);
     const data = await res.json();
     setBookings(data);
@@ -132,7 +130,6 @@ function App() {
           ))}
         </select>
       </label>
-      <p className="message">{message}</p>
 
       <Schedule
         classes={shown}
@@ -184,7 +181,9 @@ function Schedule({ classes, spotsLeft, day, setDay, email, bookClass }) {
 
 function ClassCard({ cls, spotsLeft, email, bookClass }) {
   let label = spotsLeft[cls.id] + " spots left";
-  if (spotsLeft[cls.id] <= 3) {
+  if (spotsLeft[cls.id] === 0) {
+    label = "Full";
+  } else if (spotsLeft[cls.id] <= 3) {
     label = "Almost full! " + spotsLeft[cls.id] + " left";
   }
   return (
