@@ -21,6 +21,13 @@ function App() {
   const [bookings, setBookings] = useState([]);
   const [day, setDay] = useState("All");
   const [message, setMessage] = useState("");
+  const [toast, setToast] = useState(null);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 3000);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   useEffect(() => {
     async function loadMembers() {
@@ -58,32 +65,50 @@ function App() {
 
   async function bookClass(classId) {
     try {
-      await fetch("http://localhost:3001/api/bookings", {
+      const bookRes = await fetch("http://localhost:3001/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email, classId: classId }),
       });
+      if (!bookRes.ok) {
+        const errorData = await bookRes.json();
+        setToast({ text: errorData.error || "Something went wrong", type: "error" });
+        return;
+      }
+      setToast({ text: "Booked!", type: "success" });
       const res = await fetch("http://localhost:3001/api/classes");
       const data = await res.json();
       setClasses(data);
       const res2 = await fetch("http://localhost:3001/api/bookings/" + email);
       const data2 = await res2.json();
       setBookings(data2);
-      setMessage("Booked!");
-    } catch (err) {}
+    } catch (err) {
+      console.error(err);
+      setToast({ text: "Something went wrong. Try again.", type: "error" });
+    }
   }
 
   async function cancelBooking(id) {
     try {
-      await fetch("http://localhost:3001/api/bookings/" + id, { method: "DELETE" });
+      const cancelRes = await fetch("http://localhost:3001/api/bookings/" + id, {
+        method: "DELETE",
+      });
+      if (!cancelRes.ok) {
+        const errorData = await cancelRes.json();
+        setToast({ text: errorData.error || "Something went wrong", type: "error" });
+        return;
+      }
+      setToast({ text: "Cancelled", type: "success" });
       const res = await fetch("http://localhost:3001/api/classes");
       const data = await res.json();
       setClasses(data);
       const res2 = await fetch("http://localhost:3001/api/bookings/" + email);
       const data2 = await res2.json();
       setBookings(data2);
-      setMessage("Cancelled.");
-    } catch (err) {}
+    } catch (err) {
+      console.error(err);
+      setToast({ text: "Something went wrong. Try again.", type: "error" });
+    }
   }
 
   let shown = classes;
@@ -128,6 +153,12 @@ function App() {
           </li>
         ))}
       </ul>
+
+      {toast && (
+        <div className={"toast toast-" + toast.type} role="status">
+          {toast.text}
+        </div>
+      )}
     </main>
   );
 }

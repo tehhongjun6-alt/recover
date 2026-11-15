@@ -772,3 +772,41 @@ li button:hover {
     border-radius: 20px;
   }
 }
+
+/* Toast: booking feedback */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  max-width: calc(100% - 32px);
+  padding: 14px 26px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  box-shadow: 0 12px 40px rgba(0, 9, 56, 0.45);
+  animation: toastIn 0.25s ease-out;
+}
+
+.toast-success {
+  background: var(--klein-blue);
+  color: var(--accent-neon);
+}
+
+.toast-error {
+  background: #e11d48;
+  color: #ffffff;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
