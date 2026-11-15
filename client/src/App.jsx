@@ -46,7 +46,7 @@ function App() {
       left[classes[i].id] = classes[i].capacity - classes[i].booked;
     }
     setSpotsLeft(left);
-  }, [classes.length]);
+  }, [classes]);
 
   async function selectMember(value) {
     setEmail(value);
