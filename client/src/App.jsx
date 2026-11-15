@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-
-const API_URL = "http://localhost:3001";
+import { getMembers, getClasses, getBookings, createBooking, deleteBooking } from "./api";
 
 function formatTime(iso) {
   const d = new Date(iso);
@@ -31,8 +30,7 @@ function App() {
 
   useEffect(() => {
     async function loadMembers() {
-      const res = await fetch(API_URL + "/api/members");
-      const data = await res.json();
+      const data = await getMembers();
       setMembers(data);
     }
     loadMembers();
@@ -40,19 +38,16 @@ function App() {
 
   useEffect(() => {
     async function loadClasses() {
-      const res = await fetch(API_URL + "/api/classes");
-      const data = await res.json();
+      const data = await getClasses();
       setClasses(data);
     }
     loadClasses();
   }, []);
 
   async function refreshData(email) {
-    const res = await fetch(API_URL + "/api/classes");
-    const data = await res.json();
+    const data = await getClasses();
     setClasses(data);
-    const res2 = await fetch(API_URL + "/api/bookings/" + email);
-    const data2 = await res2.json();
+    const data2 = await getBookings(email);
     setBookings(data2);
   }
 
@@ -63,11 +58,7 @@ function App() {
 
   async function bookClass(classId) {
     try {
-      const bookRes = await fetch(API_URL + "/api/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email, classId: classId }),
-      });
+      const bookRes = await createBooking(email, classId);
       if (!bookRes.ok) {
         const errorData = await bookRes.json();
         setToast({ text: errorData.error || "Something went wrong", type: "error" });
@@ -83,9 +74,7 @@ function App() {
 
   async function cancelBooking(id) {
     try {
-      const cancelRes = await fetch(API_URL + "/api/bookings/" + id, {
-        method: "DELETE",
-      });
+      const cancelRes = await deleteBooking(id);
       if (!cancelRes.ok) {
         const errorData = await cancelRes.json();
         setToast({ text: errorData.error || "Something went wrong", type: "error" });
