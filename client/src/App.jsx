@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
+const API_URL = "http://localhost:3001";
+
 function formatTime(iso) {
   const d = new Date(iso);
   const day = d.toLocaleDateString("en-MY", { weekday: "short" });
@@ -29,7 +31,7 @@ function App() {
 
   useEffect(() => {
     async function loadMembers() {
-      const res = await fetch("http://localhost:3001/api/members");
+      const res = await fetch(API_URL + "/api/members");
       const data = await res.json();
       setMembers(data);
     }
@@ -38,7 +40,7 @@ function App() {
 
   useEffect(() => {
     async function loadClasses() {
-      const res = await fetch("http://localhost:3001/api/classes");
+      const res = await fetch(API_URL + "/api/classes");
       const data = await res.json();
       setClasses(data);
     }
@@ -47,14 +49,14 @@ function App() {
 
   async function selectMember(value) {
     setEmail(value);
-    const res = await fetch("http://localhost:3001/api/bookings/" + value);
+    const res = await fetch(API_URL + "/api/bookings/" + value);
     const data = await res.json();
     setBookings(data);
   }
 
   async function bookClass(classId) {
     try {
-      const bookRes = await fetch("http://localhost:3001/api/bookings", {
+      const bookRes = await fetch(API_URL + "/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email, classId: classId }),
@@ -65,10 +67,10 @@ function App() {
         return;
       }
       setToast({ text: "Booked!", type: "success" });
-      const res = await fetch("http://localhost:3001/api/classes");
+      const res = await fetch(API_URL + "/api/classes");
       const data = await res.json();
       setClasses(data);
-      const res2 = await fetch("http://localhost:3001/api/bookings/" + email);
+      const res2 = await fetch(API_URL + "/api/bookings/" + email);
       const data2 = await res2.json();
       setBookings(data2);
     } catch (err) {
@@ -79,7 +81,7 @@ function App() {
 
   async function cancelBooking(id) {
     try {
-      const cancelRes = await fetch("http://localhost:3001/api/bookings/" + id, {
+      const cancelRes = await fetch(API_URL + "/api/bookings/" + id, {
         method: "DELETE",
       });
       if (!cancelRes.ok) {
@@ -88,10 +90,10 @@ function App() {
         return;
       }
       setToast({ text: "Cancelled", type: "success" });
-      const res = await fetch("http://localhost:3001/api/classes");
+      const res = await fetch(API_URL + "/api/classes");
       const data = await res.json();
       setClasses(data);
-      const res2 = await fetch("http://localhost:3001/api/bookings/" + email);
+      const res2 = await fetch(API_URL + "/api/bookings/" + email);
       const data2 = await res2.json();
       setBookings(data2);
     } catch (err) {
