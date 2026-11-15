@@ -37,6 +37,22 @@ app.get("/api/bookings/:email", async (req, res) => {
 });
 
 app.post("/api/bookings", async (req, res) => {
+  if (!req.body.classId) {
+    return res.status(400).json({ error: "classId is required" });
+  }
+
+  const classResult = await pool.query("SELECT capacity FROM classes WHERE id = $1", [
+    req.body.classId,
+  ]);
+  const countResult = await pool.query("SELECT COUNT(*) FROM bookings WHERE class_id = $1", [
+    req.body.classId,
+  ]);
+  const capacity = classResult.rows[0].capacity;
+  const booked = Number(countResult.rows[0].count);
+  if (booked >= capacity) {
+    return res.status(409).json({ error: "Class is full" });
+  }
+
   const result = await pool.query(
     "INSERT INTO bookings (member_email, class_id) VALUES ($1, $2) RETURNING *",
     [req.body.email, req.body.classId]
